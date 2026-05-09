@@ -1809,7 +1809,6 @@ function buildSnapshotHTML(isLight) {
   </body></html>`;
 }
 
-// Fix buildSnapshotHTML - pass sorted directly not as string key
 function buildSnapshotHTMLFixed(isLight) {
   const bulan = document.getElementById('filterBulan').value;
   const bulanLabel = document.getElementById('filterBulan').selectedOptions[0].text;
@@ -1818,56 +1817,104 @@ function buildSnapshotHTMLFixed(isLight) {
   appState.participants.forEach(p => { weekMap[p.nama] = p.weeks; });
   const weekCount = getWeekCount();
 
-  const medals = ['🥇','🥈','🥉'];
-  const bg      = isLight ? '#f4f5f7' : '#0a0a0f';
-  const surface = isLight ? '#ffffff' : '#13131a';
-  const surface2= isLight ? '#eceef2' : '#1c1c27';
-  const border  = isLight ? '#dde0e8' : '#2a2a3d';
-  const text    = isLight ? '#1a1a2e' : '#f0f0f5';
-  const muted   = isLight ? '#7a7f99' : '#6b6b8a';
-  const accentC = isLight ? '#e05a00' : '#ff7a2f';
-  const accent2C= isLight ? '#b8860b' : '#facc15';
-  const blueC   = isLight ? '#16803c' : '#22c55e';
-  const greenC  = isLight ? '#16803c' : '#22c55e';
+  // Colors — match live board
+  const bg      = isLight ? '#faf7f4' : '#0c0f0a';
+  const surface = isLight ? '#ffffff' : '#141a10';
+  const surface2= isLight ? '#f2ede8' : '#1c2418';
+  const border  = isLight ? '#e4dbd3' : '#2c3828';
+  const text    = isLight ? '#1c1a18' : '#f0f4ee';
+  const muted   = isLight ? '#8a7a6a' : '#7a8f72';
+  const accentC = isLight ? '#e05a00' : '#ff7a2f';   // distance orange
+  const elevC   = isLight ? '#16803c' : '#22c55e';   // elevation green
+  const greenC  = isLight ? '#16803c' : '#22c55e';   // week dot active
+
+  // Fixed column widths for neat week columns
+  const rankW  = '44px';
+  const nameW  = '';          // flexible
+  const valW   = '110px';
+  const weekW  = '30px';     // per week column — fixed narrow
+
+  const thBase = `padding:8px 10px;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:${muted};border-bottom:2px solid ${border};font-weight:700;white-space:nowrap;`;
+  const tdBase = `padding:9px 10px;border-bottom:1px solid ${border};font-size:12px;vertical-align:middle;`;
+
+  function rankCell(rank) {
+    if (rank > 10) return `<td style="${tdBase}width:${rankW};"></td>`;
+    const medals = ['🥇','🥈','🥉'];
+    if (rank <= 3) {
+      return `<td style="${tdBase}width:${rankW};text-align:center;font-size:16px;">${medals[rank-1]}</td>`;
+    }
+    // 4-10: numbered badge
+    const badgeBg = isLight ? '#f2ede8' : '#1c2418';
+    const badgeColor = muted;
+    return `<td style="${tdBase}width:${rankW};text-align:center;">
+      <span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:6px;background:${badgeBg};color:${badgeColor};font-family:'DM Mono',monospace;font-size:11px;font-weight:600;">${rank}</span>
+    </td>`;
+  }
 
   function boardTable(title, icon, color, sorted) {
     const isJarak = title.includes('DISTANCE');
     const built = buildRows(sorted, weekMap);
-    const weekHeaders = Array.from({length:weekCount},(_,i)=>`<th style="text-align:center;padding:8px 10px;font-size:10px;letter-spacing:1px;color:${muted};border-bottom:1px solid ${border};font-weight:600">W${i+1}</th>`).join('');
 
-    const rowsHTML = built.map(({rank,avgPace,weeks,r}) => {
-      const medal = rank <= 3 ? medals[rank-1] : `#${rank}`;
-      const weekDots = weeks.map(w=>`<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${w?greenC:border};margin:0 2px;"></span>`).join('');
-      const val = isJarak ? r.jarak.toFixed(2) : r.elevasi.toFixed(0);
-      const unit = isJarak ? 'km' : 'm';
-      const valColor = isJarak ? accentC : blueC;
-      const rowBg = rank % 2 === 0 ? surface2 : 'transparent';
-      return `<tr style="background:${rowBg}">
-        <td style="padding:10px 14px;font-size:${rank<=3?'18':'13'}px;width:40px;font-weight:bold">${medal}</td>
-        <td style="padding:10px 14px;font-size:13px;font-weight:600;color:${text}">${r.nama}</td>
-        <td style="padding:10px 14px;text-align:right;font-family:monospace;font-size:14px;font-weight:700;color:${valColor}">${val}<span style="font-size:10px;color:${muted};margin-left:3px">${unit}</span></td>
-        <td style="padding:10px 14px;text-align:right;font-family:monospace;font-size:13px;color:${accent2C}">${avgPace}<span style="font-size:10px;color:${muted}"> /km</span></td>
-        <td style="padding:10px 14px;text-align:center">${weekDots}</td>
+    // colgroup for fixed widths
+    const weekCols = Array.from({length:weekCount}, () =>
+      `<col style="width:${weekW};">`).join('');
+
+    // thead week headers
+    const weekThs = Array.from({length:weekCount}, (_,i) =>
+      `<th style="${thBase}width:${weekW};text-align:center;padding:8px 4px;">W${i+1}</th>`
+    ).join('');
+
+    const rowsHTML = built.map(({rank, weeks, r}) => {
+      const val     = isJarak ? r.jarak.toFixed(2) : r.elevasi.toFixed(0);
+      const unit    = isJarak ? 'km' : 'm';
+      const valColor= isJarak ? accentC : elevC;
+      const rowBg   = rank % 2 === 0 ? surface2 : 'transparent';
+      const init    = r.nama.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+
+      // week dot cells — one per column, centered dot
+      const weekCells = weeks.map(w =>
+        `<td style="${tdBase}width:${weekW};text-align:center;padding:9px 4px;">
+          <span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${w ? greenC : border};"></span>
+        </td>`
+      ).join('');
+
+      return `<tr style="background:${rowBg};">
+        ${rankCell(rank)}
+        <td style="${tdBase}">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="width:26px;height:26px;border-radius:6px;background:${color}18;border:1px solid ${color}33;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:${color};flex-shrink:0;">${init}</div>
+            <span style="font-weight:600;font-size:12px;color:${text};">${r.nama}</span>
+          </div>
+        </td>
+        <td style="${tdBase}width:${valW};text-align:center;">
+          <span style="white-space:nowrap;font-family:'DM Mono',monospace;font-size:13px;font-weight:700;color:${valColor};">${val} <span style='font-size:9px;color:${muted};font-weight:400;'>${unit}</span></span>
+        </td>
+        ${weekCells}
       </tr>`;
     }).join('');
 
     return `
-      <div style="flex:1;background:${surface};border:1px solid ${border};border-radius:14px;overflow:hidden;">
-        <div style="padding:16px 20px;border-bottom:1px solid ${border};display:flex;align-items:center;gap:10px;">
-          <div style="width:38px;height:38px;border-radius:9px;background:${color}22;display:flex;align-items:center;justify-content:center;font-size:18px;">${icon}</div>
+      <div style="flex:1;background:${surface};border:1px solid ${border};border-radius:12px;overflow:hidden;min-width:0;">
+        <div style="padding:14px 18px;border-bottom:1px solid ${border};display:flex;align-items:center;gap:10px;background:${surface};">
+          <div style="width:36px;height:36px;border-radius:9px;background:${color}18;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">${icon}</div>
           <div>
-            <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:${color};line-height:1.1">${title}</div>
-            <div style="font-size:10px;color:${muted};letter-spacing:1px;text-transform:uppercase;margin-top:2px">${isJarak?'Peringkat berdasarkan total jarak':'Peringkat berdasarkan total elevasi'}</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:${color};line-height:1.1;">${title}</div>
+            <div style="font-size:9px;color:${muted};letter-spacing:1px;text-transform:uppercase;margin-top:1px;">${isJarak ? 'Peringkat berdasarkan total jarak' : 'Peringkat berdasarkan total elevasi'}</div>
           </div>
         </div>
-        <table style="width:100%;border-collapse:collapse;">
+        <table style="width:100%;border-collapse:collapse;table-layout:fixed;">
+          <colgroup>
+            <col style="width:${rankW};">
+            <col>
+            <col style="width:${valW};">
+            ${weekCols}
+          </colgroup>
           <thead>
-            <tr style="background:${surface2}">
-              <th style="padding:8px 14px;text-align:left;font-size:10px;color:${muted};border-bottom:1px solid ${border};font-weight:600;letter-spacing:1px">#</th>
-              <th style="padding:8px 14px;text-align:left;font-size:10px;color:${muted};border-bottom:1px solid ${border};font-weight:600;letter-spacing:1px">NAMA</th>
-              <th style="padding:8px 14px;text-align:right;font-size:10px;color:${muted};border-bottom:1px solid ${border};font-weight:600;letter-spacing:1px">${isJarak?'JARAK':'ELEVASI'}</th>
-              <th style="padding:8px 14px;text-align:right;font-size:10px;color:${muted};border-bottom:1px solid ${border};font-weight:600;letter-spacing:1px">PACE AVG</th>
-              ${weekHeaders}
+            <tr style="background:${surface2};">
+              <th style="${thBase}width:${rankW};text-align:center;">#</th>
+              <th style="${thBase}text-align:left;">NAMA</th>
+              <th style="${thBase}width:${valW};text-align:center;">${isJarak ? 'JARAK' : 'ELEVASI'}</th>
+              ${weekThs}
             </tr>
           </thead>
           <tbody>${rowsHTML}</tbody>
@@ -1875,37 +1922,56 @@ function buildSnapshotHTMLFixed(isLight) {
       </div>`;
   }
 
-  const distSorted = hasData ? [...rows].sort((a,b)=>b.jarak-a.jarak)    : [];
-  const elevSorted = hasData ? [...rows].sort((a,b)=>b.elevasi-a.elevasi) : [];
-  const now = new Date().toLocaleString('id-ID',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  const distSorted = hasData ? [...rows].sort((a,b) => b.jarak   - a.jarak)   : [];
+  const elevSorted = hasData ? [...rows].sort((a,b) => b.elevasi - a.elevasi) : [];
+  const now = new Date().toLocaleString('id-ID', {day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
 
-  return `<!DOCTYPE html><html>
+  return `<!DOCTYPE html>
+<html>
 <head>
   <meta charset="UTF-8">
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <style>*{margin:0;padding:0;box-sizing:border-box;}</style>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    @media print {
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      @page { size: A4 landscape; margin: 16mm; }
+    }
+  </style>
 </head>
-<body style="background:${bg};padding:40px;font-family:'DM Sans',sans-serif;color:${text};">
-  <div style="max-width:1100px;margin:0 auto;">
-    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:30px;padding-bottom:18px;border-bottom:2px solid ${border}">
+<body style="background:${bg};padding:32px;font-family:'DM Sans',sans-serif;color:${text};">
+  <div style="max-width:1200px;margin:0 auto;">
+
+    <!-- Header -->
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid ${border};">
       <div>
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:3px;color:${accentC};line-height:1">🏃 SLOW PACE SCENARIO LEAGUE</div>
-        <div style="font-size:12px;color:${muted};letter-spacing:3px;text-transform:uppercase;margin-top:4px">Papan Peringkat &mdash; ${bulanLabel}</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:3px;color:${accentC};line-height:1;">🏃 SLOW PACE SCENARIO LEAGUE</div>
+        <div style="font-size:11px;color:${muted};letter-spacing:3px;text-transform:uppercase;margin-top:4px;">Papan Peringkat &mdash; ${bulanLabel}</div>
       </div>
-      <div style="text-align:right;font-family:'DM Mono',monospace;font-size:11px;color:${muted};line-height:1.8">
-        <div style="text-transform:uppercase;letter-spacing:1px">Dicetak pada</div>
-        <div style="color:${text};font-size:12px">${now}</div>
+      <div style="text-align:right;font-family:'DM Mono',monospace;font-size:10px;color:${muted};line-height:1.9;">
+        <div style="text-transform:uppercase;letter-spacing:1px;">Dicetak pada</div>
+        <div style="color:${text};font-size:11px;">${now}</div>
       </div>
     </div>
-    <div style="display:flex;gap:24px;">
+
+    <!-- Boards side by side -->
+    <div style="display:flex;gap:20px;align-items:flex-start;">
       ${hasData
-        ? boardTable('MASTER OF DISTANCE','🏃',accentC,distSorted) +
-          boardTable('KING OF ELEVATION','⛰️',blueC,elevSorted)
-        : `<div style="text-align:center;padding:80px;color:${muted};font-size:15px;flex:1">Belum ada data untuk periode ini.</div>`
+        ? boardTable('MASTER OF DISTANCE', '🏃', accentC, distSorted) +
+          boardTable('KING OF ELEVATION',  '⛰️', elevC,   elevSorted)
+        : `<div style="text-align:center;padding:80px;color:${muted};font-size:15px;flex:1;">Belum ada data untuk periode ini.</div>`
       }
     </div>
+
+    <!-- Legend -->
+    <div style="margin-top:20px;display:flex;align-items:center;gap:20px;font-size:10px;color:${muted};">
+      <span style="display:flex;align-items:center;gap:5px;"><span style="width:9px;height:9px;border-radius:50%;background:${greenC};display:inline-block;"></span> Hadir minggu tersebut</span>
+      <span style="display:flex;align-items:center;gap:5px;"><span style="width:9px;height:9px;border-radius:50%;background:${border};display:inline-block;"></span> Tidak hadir</span>
+      <span>🏅 Peringkat 1–10 mendapat badge</span>
+    </div>
   </div>
-</body></html>`;
+</body>
+</html>`;
 }
 
 function downloadPNG() {
