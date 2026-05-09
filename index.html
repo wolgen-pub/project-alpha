@@ -7,57 +7,61 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0a0f;
-    --surface: #13131a;
-    --surface2: #1c1c27;
-    --border: #2a2a3d;
-    --accent: #c8df00;
-    --accent2: #ff6b35;
-    --text: #f0f0f5;
-    --muted: #6b6b8a;
+    --bg: #0c0f0a;
+    --surface: #141a10;
+    --surface2: #1c2418;
+    --border: #2c3828;
+    --accent: #ff7a2f;
+    --accent2: #facc15;
+    --elev-color: #22c55e;
+    --text: #f0f4ee;
+    --muted: #7a8f72;
     --green: #4ade80;
     --red: #f87171;
+    --blue: #22c55e;
     --theme-toggle-bg: rgba(255,255,255,.07);
     --shadow: none;
   }
 
   /* ── LIGHT MODE ── */
   html.light {
-    --bg: #f4f5f7;
+    --bg: #faf7f4;
     --surface: #ffffff;
-    --surface2: #eceef2;
-    --border: #dde0e8;
-    --accent: #5c8a00;
-    --accent2: #d94f1a;
-    --text: #1a1a2e;
-    --muted: #7a7f99;
-    --green: #1e9e52;
+    --surface2: #f2ede8;
+    --border: #e4dbd3;
+    --accent: #e05a00;
+    --accent2: #b8860b;
+    --elev-color: #16803c;
+    --text: #1c1a18;
+    --muted: #8a7a6a;
+    --green: #16803c;
     --red: #d93636;
+    --blue: #16803c;
     --theme-toggle-bg: rgba(0,0,0,.06);
     --shadow: 0 2px 12px rgba(0,0,0,.08);
   }
-  html.light .logo-main { color: #3a6200; }
-  html.light .cal-day.selected { background: #5c8a00 !important; color: #fff; }
-  html.light .btn-submit { background: #5c8a00; color: #fff; }
-  html.light .btn-submit:hover { box-shadow: 0 8px 24px rgba(92,138,0,.25); }
-  html.light .board-name.distance { color: #3a6200; }
-  html.light .avatar { color: #3a6200; border-color: var(--border); }
-  html.light .opt-avatar { color: #3a6200; }
+  html.light .logo-main { color: #e05a00; }
+  html.light .cal-day.selected { background: #e05a00 !important; color: #fff; }
+  html.light .btn-submit { background: #e05a00; color: #fff; }
+  html.light .btn-submit:hover { box-shadow: 0 8px 24px rgba(224,90,0,.3); }
+  html.light .board-name.distance { color: #e05a00; }
+  html.light .avatar { color: #e05a00; border-color: var(--border); }
+  html.light .opt-avatar { color: #e05a00; }
   html.light .val-main { color: var(--text); }
   html.light .wdot.active { background: var(--green); }
-  html.light .week-table tbody tr:hover { background: rgba(92,138,0,.04); }
-  html.light .name-option:hover { background: rgba(92,138,0,.06); }
-  html.light .btn-add-week5 { border-color: rgba(92,138,0,.4); color: #3a6200; }
-  html.light .btn-add-week5:hover { background: rgba(92,138,0,.06); border-color: #5c8a00; }
-  html.light .btn-sm { border-color: #5c8a00; color: #3a6200; }
-  html.light .btn-sm:hover { background: #5c8a00; color: #fff; }
+  html.light .week-table tbody tr:hover { background: rgba(224,90,0,.04); }
+  html.light .name-option:hover { background: rgba(224,90,0,.06); }
+  html.light .btn-add-week5 { border-color: rgba(224,90,0,.35); color: #e05a00; }
+  html.light .btn-add-week5:hover { background: rgba(224,90,0,.06); border-color: #e05a00; }
+  html.light .btn-sm { border-color: #e05a00; color: #e05a00; }
+  html.light .btn-sm:hover { background: #e05a00; color: #fff; }
   html.light input[type="text"]:focus,
-  html.light input[type="number"]:focus { border-color: #5c8a00; box-shadow: 0 0 0 3px rgba(92,138,0,.1); }
-  html.light .date-display:hover, html.light .date-display.open { border-color: #5c8a00; box-shadow: 0 0 0 3px rgba(92,138,0,.1); }
-  html.light .cal-day.today { color: #3a6200; }
-  html.light .cal-nav-btn:hover { border-color: #5c8a00; color: #3a6200; }
-  html.light .wc-date-input:focus { border-color: #5c8a00; }
-  html.light .shared-filter-bar select:focus { border-color: #5c8a00; }
+  html.light input[type="number"]:focus { border-color: #e05a00; box-shadow: 0 0 0 3px rgba(224,90,0,.1); }
+  html.light .date-display:hover, html.light .date-display.open { border-color: #e05a00; box-shadow: 0 0 0 3px rgba(224,90,0,.1); }
+  html.light .cal-day.today { color: #e05a00; }
+  html.light .cal-nav-btn:hover { border-color: #e05a00; color: #e05a00; }
+  html.light .wc-date-input:focus { border-color: #e05a00; }
+  html.light .shared-filter-bar select:focus { border-color: #e05a00; }
   html.light .input-card { box-shadow: var(--shadow); }
   html.light .aktivitas-card, html.light .kehadiran-card, html.light .minggu-card { box-shadow: var(--shadow); }
   html.light .dual-boards { box-shadow: var(--shadow); }
@@ -109,7 +113,7 @@
     font-family:'DM Sans',sans-serif; font-size:13px;
     transition:border-color .2s,box-shadow .2s; outline:none;
   }
-  input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(232,255,71,.08); }
+  input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(255,122,47,.1); }
   label { display:block; font-size:11px; color:var(--muted); margin-bottom:5px; font-weight:500; letter-spacing:.5px; }
   .form-group { margin-bottom: 12px; }
   .input-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
@@ -199,15 +203,15 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 16px; flex-shrink: 0;
   }
-  .board-icon.distance { background: rgba(232,255,71,.12); }
-  .board-icon.elevation { background: rgba(99,210,255,.12); }
+  .board-icon.distance { background: rgba(255,122,47,.12); }
+  .board-icon.elevation { background: rgba(34,197,94,.12); }
 
   .board-titles { display: flex; flex-direction: column; gap: 1px; }
   .board-name {
     font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 2px; line-height: 1;
   }
   .board-name.distance { color: var(--accent); }
-  .board-name.elevation { color: #63d2ff; }
+  .board-name.elevation { color: var(--elev-color); }
   .board-sub { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
 
   .table-scroll { overflow-x:auto; overflow-y: auto; }
@@ -226,12 +230,12 @@
   .klasemen-table tbody tr:last-child td { border-bottom:none; }
 
   /* Elevation board accent color override */
-  .board-wrap.elev-board .pace-val { color: #63d2ff; }
-  .board-wrap.elev-board .wdot.active { background: #63d2ff; }
-  .board-wrap.elev-board .avatar { color: #63d2ff; }
-  .board-wrap.elev-board .rank-1 { background:rgba(99,210,255,.15); color:#63d2ff; }
-  .board-wrap.elev-board .rank-2 { background:rgba(99,210,255,.1); color:#8de0ff; }
-  .board-wrap.elev-board .rank-3 { background:rgba(99,210,255,.07); color:#aae8ff; }
+  .board-wrap.elev-board .pace-val { color: var(--elev-color); }
+  .board-wrap.elev-board .wdot.active { background: var(--elev-color); }
+  .board-wrap.elev-board .avatar { color: var(--elev-color); }
+  .board-wrap.elev-board .rank-1 { background:rgba(34,197,94,.18); color:var(--elev-color); }
+  .board-wrap.elev-board .rank-2 { background:rgba(34,197,94,.12); color:#5ed48a; }
+  .board-wrap.elev-board .rank-3 { background:rgba(34,197,94,.08); color:#86dfa8; }
 
   .rank-badge { display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:7px; font-family:'Bebas Neue',sans-serif; font-size:16px; }
   .rank-1 { background:rgba(255,215,0,.15); color:#ffd700; }
@@ -282,7 +286,30 @@
     font-family: 'Bebas Neue', sans-serif;
     font-size: 16px; letter-spacing: 2px; color: var(--text);
   }
-  .aktivitas-scroll { max-height: 340px; overflow-y: auto; }
+  .aktivitas-scroll { max-height: 280px; overflow-y: auto; }
+  .aktivitas-filter {
+    padding: 10px 16px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap;
+    background: var(--surface2);
+  }
+  .akt-filter-group { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 90px; }
+  .akt-filter-group label { font-size: 9px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; font-weight: 600; }
+  .akt-filter-group input[type="text"] { padding: 6px 10px; font-size: 12px; }
+  .akt-name-wrap { position: relative; }
+  .akt-name-dropdown {
+    position: absolute; top: calc(100% + 3px); left: 0; right: 0; z-index: 400;
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+    display: none; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,.4); max-height: 150px; overflow-y: auto;
+  }
+  .akt-name-dropdown.open { display: block; }
+  .akt-name-opt {
+    padding: 8px 12px; font-size: 12px; cursor: pointer;
+    border-bottom: 1px solid rgba(42,42,61,.4); transition: background .1s;
+  }
+  .akt-name-opt:last-child { border-bottom: none; }
+  .akt-name-opt:hover { background: rgba(255,122,47,.07); }
+  .akt-name-opt.clear-opt { color: var(--muted); font-style: italic; }
   .aktivitas-table { width:100%; border-collapse:collapse; }
   .aktivitas-table th {
     padding:8px 14px; font-size:9px; letter-spacing:2px; text-transform:uppercase;
@@ -325,7 +352,7 @@
   .week-table td { padding:8px 10px; border-bottom:1px solid rgba(42,42,61,.5); font-size:12px; text-align:center; }
   .week-table td:first-child { text-align:left; font-weight:500; padding-left:16px; }
   .week-table tbody tr:last-child td { border-bottom:none; }
-  .week-table tbody tr:hover { background:rgba(232,255,71,.03); }
+  .week-table tbody tr:hover { background:rgba(255,122,47,.04); }
   .custom-check { width:15px; height:15px; accent-color:var(--accent); cursor:pointer; }
   .kehadiran-scroll { overflow-y: auto; }
 
@@ -354,13 +381,13 @@
   .wc-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
   .btn-add-week5 {
     width:100%; margin-top:10px; padding:8px 12px;
-    background:transparent; border:1px dashed rgba(232,255,71,.4);
+    background:transparent; border:1px dashed rgba(255,122,47,.4);
     color:var(--accent); border-radius:8px; cursor:pointer;
     font-family:'DM Mono',monospace; font-size:11px; letter-spacing:1px;
     display:flex; align-items:center; justify-content:center; gap:6px;
     transition:background .2s, border-color .2s;
   }
-  .btn-add-week5:hover { background:rgba(232,255,71,.06); border-color:var(--accent); }
+  .btn-add-week5:hover { background:rgba(255,122,47,.08); border-color:var(--accent); }
 
   /* ── DATE PICKER ── */
   .date-picker-wrap { position:relative; }
@@ -371,7 +398,7 @@
     cursor:pointer; transition:border-color .2s,box-shadow .2s; user-select:none;
     display:flex; align-items:center; justify-content:space-between;
   }
-  .date-display:hover, .date-display.open { border-color:var(--accent); box-shadow:0 0 0 3px rgba(232,255,71,.08); }
+  .date-display:hover, .date-display.open { border-color:var(--accent); box-shadow:0 0 0 3px rgba(255,122,47,.1); }
   .date-display .cal-icon { font-size:14px; flex-shrink:0; }
   .date-dropdown {
     position:absolute; top:calc(100% + 6px); left:0;
@@ -411,7 +438,7 @@
     transition:background .1s; border-bottom:1px solid rgba(42,42,61,.4);
   }
   .name-option:last-child { border-bottom:none; }
-  .name-option:hover { background:rgba(232,255,71,.06); }
+  .name-option:hover { background:rgba(255,122,47,.07); }
   .opt-avatar {
     width:26px; height:26px; border-radius:6px; background:var(--surface);
     border:1px solid var(--border); display:flex; align-items:center; justify-content:center;
@@ -427,7 +454,7 @@
     border-radius:10px; font-family:'Bebas Neue',sans-serif; font-size:17px;
     letter-spacing:2px; cursor:pointer; transition:transform .15s,box-shadow .15s;
   }
-  .btn-submit:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(232,255,71,.25); }
+  .btn-submit:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(255,122,47,.3); }
   .btn-submit:active { transform:translateY(0); }
 
   .btn-sm {
@@ -564,8 +591,8 @@
     letter-spacing: .5px;
     transition: background .2s, border-color .2s, color .2s;
   }
-  .btn-download:hover { border-color: var(--accent); color: var(--accent); background: rgba(232,255,71,.06); }
-  html.light .btn-download:hover { border-color: #5c8a00; color: #3a6200; background: rgba(92,138,0,.06); }
+  .btn-download:hover { border-color: var(--accent); color: var(--accent); background: rgba(255,122,47,.07); }
+  html.light .btn-download:hover { border-color: #e05a00; color: #e05a00; background: rgba(224,90,0,.07); }
 
   /* ── VIEW-ONLY MODE ── */
   html.view-only .custom-check { pointer-events: none; opacity: .5; }
@@ -635,8 +662,8 @@
     box-shadow: 0 0 0 3px rgba(232,255,71,.08);
   }
   html.light .login-field input:focus {
-    border-color: #5c8a00;
-    box-shadow: 0 0 0 3px rgba(92,138,0,.1);
+    border-color: #e05a00;
+    box-shadow: 0 0 0 3px rgba(224,90,0,.1);
   }
   .login-error {
     font-size: 12px; color: var(--red);
@@ -656,8 +683,8 @@
   }
   .btn-login:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232,255,71,.25); }
   .btn-login:active { transform: translateY(0); }
-  html.light .btn-login { background: #5c8a00; color: #fff; }
-  html.light .btn-login:hover { box-shadow: 0 8px 24px rgba(92,138,0,.25); }
+  html.light .btn-login { background: #e05a00; color: #fff; }
+  html.light .btn-login:hover { box-shadow: 0 8px 24px rgba(224,90,0,.3); }
   .login-hint {
     text-align: center; margin-top: 16px;
     font-size: 11px; color: var(--muted);
@@ -832,7 +859,7 @@
             <table class="klasemen-table">
               <thead>
                 <tr>
-                  <th>#</th><th>Nama</th><th>Total Jarak</th><th>Pace Avg</th><th>Minggu</th>
+                  <th>#</th><th>Nama</th><th>Total Jarak</th><th>Minggu</th>
                 </tr>
               </thead>
               <tbody id="distanceBody"></tbody>
@@ -853,7 +880,7 @@
             <table class="klasemen-table">
               <thead>
                 <tr>
-                  <th>#</th><th>Nama</th><th>Total Elevasi</th><th>Pace Avg</th><th>Minggu</th>
+                  <th>#</th><th>Nama</th><th>Total Elevasi</th><th>Minggu</th>
                 </tr>
               </thead>
               <tbody id="elevationBody"></tbody>
@@ -874,6 +901,27 @@
       <div class="aktivitas-header">
         <div class="aktivitas-title">📋 DATA AKTIVITAS</div>
         <button class="btn-sm" id="clearAllDataBtn" onclick="clearAllData()" style="border-color:var(--red);color:var(--red)" onmouseover="this.style.background='rgba(248,113,113,.1)'" onmouseout="this.style.background='transparent'">Hapus Semua</button>
+      </div>
+      <div class="aktivitas-filter">
+        <div class="akt-filter-group">
+          <label>Nama</label>
+          <div class="akt-name-wrap">
+            <input type="text" id="filterNama" placeholder="Semua peserta..." autocomplete="off"
+              oninput="renderAktivitas()" onfocus="showAktNamaDropdown()" />
+            <div class="akt-name-dropdown" id="aktNamaDropdown"></div>
+          </div>
+        </div>
+        <div class="akt-filter-group">
+          <label>Dari</label>
+          <input type="date" id="filterDari" onchange="renderAktivitas()"
+            style="background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;outline:none;width:100%;" />
+        </div>
+        <div class="akt-filter-group">
+          <label>Sampai</label>
+          <input type="date" id="filterSampai" onchange="renderAktivitas()"
+            style="background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;outline:none;width:100%;" />
+        </div>
+        <button class="btn-sm" onclick="resetAktFilter()" style="margin-top:14px;font-size:9px;padding:4px 10px;opacity:.7">Reset</button>
       </div>
       <div class="aktivitas-scroll">
         <table class="aktivitas-table">
@@ -1369,13 +1417,52 @@ function removeParticipant(i) {
 }
 
 // ─── DATA AKTIVITAS ─────────────────────────────────────────────
+function showAktNamaDropdown() {
+  const inp = document.getElementById('filterNama');
+  const dd = document.getElementById('aktNamaDropdown');
+  const q = inp.value.trim().toLowerCase();
+  const names = [...new Set(appState.participants.map(p=>p.nama))].sort();
+  const matches = names.filter(n => !q || n.toLowerCase().includes(q));
+  let html = q ? `<div class="akt-name-opt clear-opt" onclick="selectAktNama('')">— Semua Peserta —</div>` : '';
+  html += matches.map(n => `<div class="akt-name-opt" onclick="selectAktNama('${n.replace(/'/g,"\'")}')">${n}</div>`).join('');
+  dd.innerHTML = html || `<div class="akt-name-opt clear-opt">Tidak ada peserta</div>`;
+  dd.classList.add('open');
+}
+function selectAktNama(nama) {
+  document.getElementById('filterNama').value = nama;
+  document.getElementById('aktNamaDropdown').classList.remove('open');
+  renderAktivitas();
+}
+function resetAktFilter() {
+  document.getElementById('filterNama').value = '';
+  document.getElementById('filterDari').value = '';
+  document.getElementById('filterSampai').value = '';
+  renderAktivitas();
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.akt-name-wrap'))
+    document.getElementById('aktNamaDropdown')?.classList.remove('open');
+});
+
 function renderAktivitas() {
   const tbody = document.getElementById('aktivitasBody');
+  const filterNama = (document.getElementById('filterNama')?.value||'').trim().toLowerCase();
+  const filterDari = document.getElementById('filterDari')?.value || '';
+  const filterSampai = document.getElementById('filterSampai')?.value || '';
+
   if (!appState.entries.length) {
     tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--muted);font-size:11px;padding:20px;">Belum ada data aktivitas</td></tr>`;
     return;
   }
-  const sorted = [...appState.entries].sort((a,b) => b.tanggal.localeCompare(a.tanggal));
+  let entries = [...appState.entries];
+  if (filterNama) entries = entries.filter(e => e.nama.toLowerCase().includes(filterNama));
+  if (filterDari) entries = entries.filter(e => e.tanggal >= filterDari);
+  if (filterSampai) entries = entries.filter(e => e.tanggal <= filterSampai);
+  const sorted = entries.sort((a,b) => b.tanggal.localeCompare(a.tanggal));
+  if (!sorted.length) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--muted);font-size:11px;padding:20px;">Tidak ada data sesuai filter</td></tr>`;
+    return;
+  }
   tbody.innerHTML = sorted.map((e) => {
     const origIdx = appState.entries.indexOf(e);
     const tgl = new Date(e.tanggal+'T00:00:00').toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'2-digit'});
@@ -1391,7 +1478,7 @@ function renderAktivitas() {
         <span style="font-size:12px">${e.nama}</span>
       </div></td>
       <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent2)">${e.jarak.toFixed(2)}<span style="color:var(--muted);font-size:10px"> km</span></td>
-      <td style="font-family:'DM Mono',monospace;font-size:12px;color:#63d2ff">${(e.elevasi||0).toFixed(0)}<span style="color:var(--muted);font-size:10px"> m</span></td>
+      <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--elev-color)">${(e.elevasi||0).toFixed(0)}<span style="color:var(--muted);font-size:10px"> m</span></td>
       <td style="font-family:'DM Mono',monospace;font-size:12px">${e.pace}<span style="color:var(--muted);font-size:10px"> /km</span></td>
       <td style="display:flex;gap:4px;justify-content:flex-end;">
         <button class="btn-edit" onclick="openEditModal(${origIdx})" title="Edit">✎</button>
@@ -1574,15 +1661,14 @@ function renderKlasmen() {
   // ── MASTER OF DISTANCE (sort by jarak desc) ──
   const distBody = document.getElementById('distanceBody');
   if (!hasData) {
-    distBody.innerHTML = emptyHtml(5,'🏃','Belum ada data aktivitas');
+    distBody.innerHTML = emptyHtml(4,'🏃','Belum ada data aktivitas');
   } else {
-    const sorted = [...rows].sort((a,b)=>b.jarak-a.jarak);
+    const sorted = [...rows].sort((a,b)=>b.jarak-a.jarak).slice(0,10);
     const built = buildRows(sorted, weekMap);
     distBody.innerHTML = built.map(({rank,avgPace,weeks,rc,init,r})=>`<tr>
       <td><span class="rank-badge ${rc}">${rank}</span></td>
       <td><div class="name-cell"><div class="avatar">${init}</div><span>${r.nama}</span></div></td>
       <td><span class="val-main" style="color:var(--accent)">${r.jarak.toFixed(2)}</span><span class="val-unit"> km</span></td>
-      <td><span class="pace-val">${avgPace}</span><span class="val-unit"> /km</span></td>
       <td><div class="week-dots">${weeks.map(w=>`<div class="wdot${w?' active':''}"></div>`).join('')}</div></td>
     </tr>`).join('');
   }
@@ -1590,15 +1676,14 @@ function renderKlasmen() {
   // ── KING OF ELEVATION (sort by elevasi desc) ──
   const elevBody = document.getElementById('elevationBody');
   if (!hasData) {
-    elevBody.innerHTML = emptyHtml(5,'⛰️','Belum ada data aktivitas');
+    elevBody.innerHTML = emptyHtml(4,'⛰️','Belum ada data aktivitas');
   } else {
-    const sorted = [...rows].sort((a,b)=>b.elevasi-a.elevasi);
+    const sorted = [...rows].sort((a,b)=>b.elevasi-a.elevasi).slice(0,10);
     const built = buildRows(sorted, weekMap);
     elevBody.innerHTML = built.map(({rank,avgPace,weeks,rc,init,r})=>`<tr>
       <td><span class="rank-badge ${rc}">${rank}</span></td>
       <td><div class="name-cell"><div class="avatar">${init}</div><span>${r.nama}</span></div></td>
-      <td><span class="val-main" style="color:#63d2ff">${r.elevasi.toFixed(0)}</span><span class="val-unit"> m</span></td>
-      <td><span class="pace-val">${avgPace}</span><span class="val-unit"> /km</span></td>
+      <td><span class="val-main" style="color:var(--elev-color)">${r.elevasi.toFixed(0)}</span><span class="val-unit"> m</span></td>
       <td><div class="week-dots">${weeks.map(w=>`<div class="wdot${w?' active':''}"></div>`).join('')}</div></td>
     </tr>`).join('');
   }
@@ -1645,10 +1730,10 @@ function buildSnapshotHTML(isLight) {
   const border = isLight ? '#dde0e8' : '#2a2a3d';
   const text   = isLight ? '#1a1a2e' : '#f0f0f5';
   const muted  = isLight ? '#7a7f99' : '#6b6b8a';
-  const accent = isLight ? '#3a6200' : '#e8ff47';
-  const accent2= isLight ? '#d94f1a' : '#ff6b35';
-  const blue   = '#63d2ff';
-  const green  = isLight ? '#1e9e52' : '#4ade80';
+  const accent = isLight ? '#e05a00' : '#ff7a2f';
+  const accent2= isLight ? '#b8860b' : '#facc15';
+  const blue   = isLight ? '#16803c' : '#22c55e';
+  const green  = isLight ? '#16803c' : '#22c55e';
 
   function boardTable(title, icon, color, sorted, valueKey, valueSuffix) {
     const rows2 = buildRows(sorted, weekMap);
@@ -1740,10 +1825,10 @@ function buildSnapshotHTMLFixed(isLight) {
   const border  = isLight ? '#dde0e8' : '#2a2a3d';
   const text    = isLight ? '#1a1a2e' : '#f0f0f5';
   const muted   = isLight ? '#7a7f99' : '#6b6b8a';
-  const accentC = isLight ? '#3a6200' : '#e8ff47';
-  const accent2C= isLight ? '#d94f1a' : '#ff6b35';
-  const blueC   = '#63d2ff';
-  const greenC  = isLight ? '#1e9e52' : '#4ade80';
+  const accentC = isLight ? '#e05a00' : '#ff7a2f';
+  const accent2C= isLight ? '#b8860b' : '#facc15';
+  const blueC   = isLight ? '#16803c' : '#22c55e';
+  const greenC  = isLight ? '#16803c' : '#22c55e';
 
   function boardTable(title, icon, color, sorted) {
     const isJarak = title.includes('DISTANCE');
