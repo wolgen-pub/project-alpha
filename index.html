@@ -1663,10 +1663,10 @@ function renderKlasmen() {
   if (!hasData) {
     distBody.innerHTML = emptyHtml(4,'🏃','Belum ada data aktivitas');
   } else {
-    const sorted = [...rows].sort((a,b)=>b.jarak-a.jarak).slice(0,10);
+    const sorted = [...rows].sort((a,b)=>b.jarak-a.jarak);
     const built = buildRows(sorted, weekMap);
     distBody.innerHTML = built.map(({rank,avgPace,weeks,rc,init,r})=>`<tr>
-      <td><span class="rank-badge ${rc}">${rank}</span></td>
+      <td>${rank<=10?`<span class="rank-badge ${rc}">${rank}</span>`:''}</td>
       <td><div class="name-cell"><div class="avatar">${init}</div><span>${r.nama}</span></div></td>
       <td><span class="val-main" style="color:var(--accent)">${r.jarak.toFixed(2)}</span><span class="val-unit"> km</span></td>
       <td><div class="week-dots">${weeks.map(w=>`<div class="wdot${w?' active':''}"></div>`).join('')}</div></td>
@@ -1678,10 +1678,10 @@ function renderKlasmen() {
   if (!hasData) {
     elevBody.innerHTML = emptyHtml(4,'⛰️','Belum ada data aktivitas');
   } else {
-    const sorted = [...rows].sort((a,b)=>b.elevasi-a.elevasi).slice(0,10);
+    const sorted = [...rows].sort((a,b)=>b.elevasi-a.elevasi);
     const built = buildRows(sorted, weekMap);
     elevBody.innerHTML = built.map(({rank,avgPace,weeks,rc,init,r})=>`<tr>
-      <td><span class="rank-badge ${rc}">${rank}</span></td>
+      <td>${rank<=10?`<span class="rank-badge ${rc}">${rank}</span>`:''}</td>
       <td><div class="name-cell"><div class="avatar">${init}</div><span>${r.nama}</span></div></td>
       <td><span class="val-main" style="color:var(--elev-color)">${r.elevasi.toFixed(0)}</span><span class="val-unit"> m</span></td>
       <td><div class="week-dots">${weeks.map(w=>`<div class="wdot${w?' active':''}"></div>`).join('')}</div></td>
