@@ -132,6 +132,9 @@
     align-items: start;
   }
 
+  /* ── LEFT COLUMN ── */
+  .left-col { display: flex; flex-direction: column; gap: 0; }
+
   /* ── INPUT CARD (left top) ── */
   .input-card {
     background: var(--surface);
@@ -504,6 +507,62 @@
     .minggu-card { grid-column: auto; }
   }
 
+
+  /* ── STRENGTH TRAINING CARD ── */
+  .st-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-top: 14px;
+  }
+  .st-card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px; letter-spacing: 2px; color: var(--elev-color);
+    margin-bottom: 4px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .st-log {
+    margin-top: 14px;
+    max-height: 150px; overflow-y: auto;
+    border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+  }
+  .st-log table { width: 100%; border-collapse: collapse; }
+  .st-log thead tr { background: var(--surface2); }
+  .st-log th {
+    padding: 7px 10px; font-size: 9px; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--muted); font-weight: 600;
+    text-align: left; border-bottom: 1px solid var(--border);
+  }
+  .st-log td {
+    padding: 7px 10px; font-size: 12px;
+    border-bottom: 1px solid rgba(44,56,40,.4);
+  }
+  .st-log tbody tr:last-child td { border-bottom: none; }
+  .st-log tbody tr:hover { background: rgba(34,197,94,.03); }
+  .st-log .st-week-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 2px 7px; border-radius: 5px; font-size: 10px; font-weight: 700;
+    font-family: 'DM Mono', monospace;
+    background: rgba(34,197,94,.12); color: var(--elev-color);
+    border: 1px solid rgba(34,197,94,.25);
+  }
+  .st-log .btn-del-st {
+    background: transparent; border: none; color: var(--muted);
+    cursor: pointer; font-size: 12px; padding: 2px 6px; border-radius: 5px;
+    transition: color .15s, background .15s;
+  }
+  .st-log .btn-del-st:hover { color: var(--red); background: rgba(248,113,113,.1); }
+  .st-empty { text-align: center; color: var(--muted); font-size: 11px; padding: 14px; }
+  html.view-only .st-card { pointer-events: none; opacity: .6; }
+  #stCard .btn-submit { background: var(--elev-color); color: #0c0f0a; box-shadow: none; }
+  #stCard .btn-submit:hover { box-shadow: 0 8px 24px rgba(34,197,94,.3); background: var(--elev-color); }
+  html.light #stCard .btn-submit { color: #fff; }
+  html.view-only .st-card .btn-submit,
+  html.view-only .st-card .btn-del-st { display: none; }
+
   /* ── EDIT MODAL ── */
   .modal-overlay {
     position:fixed; inset:0; background:rgba(0,0,0,.7); z-index:500;
@@ -764,7 +823,8 @@
   <!-- TOP ROW: Input Form + Klasemen -->
   <div class="top-row">
 
-    <!-- INPUT CARD -->
+    <!-- LEFT COLUMN: input + sync -->
+    <div class="left-col" id="leftCol">
     <div class="input-card" id="inputCard">
       <div class="card-title">
         <span class="card-icon">✏️</span> Input Data
@@ -824,6 +884,47 @@
 
       <button class="btn-submit" onclick="submitData()">+ Tambah Data</button>
     </div>
+
+    <!-- STRENGTH TRAINING CARD -->
+    <div class="st-card" id="stCard">
+      <div class="st-card-title">💪 Strength Training Weekly</div>
+
+      <div class="form-group">
+        <label>Tanggal</label>
+        <div class="date-picker-wrap" id="stDatePickerWrap">
+          <div class="date-display" id="stDateDisplay" onclick="toggleStDatePicker()">
+            <span id="stDateDisplayText" style="color:var(--muted)">Pilih tanggal...</span>
+            <span class="cal-icon">📅</span>
+          </div>
+          <div class="date-dropdown" id="stDateDropdown">
+            <div class="cal-nav">
+              <button class="cal-nav-btn" onclick="stCalChangeMonth(-1)">‹</button>
+              <div class="cal-month-year" id="stCalMonthYear"></div>
+              <button class="cal-nav-btn" onclick="stCalChangeMonth(1)">›</button>
+            </div>
+            <div class="cal-grid" id="stCalGrid"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Nama Peserta</label>
+        <div class="name-search-wrap" id="stNameSearchWrap">
+          <input type="text" id="st-nama" placeholder="Cari atau ketik nama..."
+            autocomplete="off" oninput="showStNameDropdown()" onfocus="showStNameDropdown()" />
+          <div class="name-dropdown" id="stNameDropdown"></div>
+        </div>
+      </div>
+
+      <button class="btn-submit" style="background:var(--elev-color);color:#0c0f0a;" onclick="submitST()">+ Simpan Strength Training</button>
+
+      <!-- ST Log -->
+      <div class="st-log" id="stLog">
+        <div class="st-empty">Belum ada data strength training</div>
+      </div>
+    </div>
+
+    </div><!-- /left-col -->
 
     <!-- DUAL KLASEMEN -->
     <div class="klasemen-area">
@@ -920,6 +1021,14 @@
           <label>Sampai</label>
           <input type="date" id="filterSampai" onchange="renderAktivitas()"
             style="background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;outline:none;width:100%;" />
+        </div>
+        <div class="akt-filter-group" style="min-width:120px;">
+          <label>Urutan</label>
+          <select id="aktSortMode" onchange="renderAktivitas()"
+            style="background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;outline:none;width:100%;cursor:pointer;">
+            <option value="input">Waktu Input ↓</option>
+            <option value="tanggal">Tanggal Data ↓</option>
+          </select>
         </div>
         <button class="btn-sm" onclick="resetAktFilter()" style="margin-top:14px;font-size:9px;padding:4px 10px;opacity:.7">Reset</button>
       </div>
@@ -1030,7 +1139,7 @@ const SUPABASE_URL = 'https://mjweyevutqhrkkhyeesi.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qd2V5ZXZ1dHFocmtraHllZXNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxODMyNDAsImV4cCI6MjA5Mzc1OTI0MH0.hSdEjrNyD8QT7ckkrw59Q2kHy5naWnkBIDVlFamXcWA';
 const TABLE_KEY = 'liga_lari_data';
 let isConnected = false;
-let appState = { entries:[], participants:[], lastUpdated:null };
+let appState = { entries:[], participants:[], stEntries:[], lastUpdated:null };
 
 function sbHeaders() {
   return { 'apikey':SUPABASE_KEY, 'Authorization':'Bearer '+SUPABASE_KEY, 'Content-Type':'application/json' };
@@ -1044,9 +1153,9 @@ async function loadFromSupabase() {
     const rows = await res.json();
     if (Array.isArray(rows)&&rows.length>0&&rows[0].value) {
       const s=rows[0].value;
-      appState.entries=s.entries||[]; appState.participants=s.participants||[]; appState.lastUpdated=s.lastUpdated||null; appState.weekDefs=s.weekDefs||{};
+      appState.entries=s.entries||[]; appState.participants=s.participants||[]; appState.stEntries=s.stEntries||[]; appState.lastUpdated=s.lastUpdated||null; appState.weekDefs=s.weekDefs||{};
     }
-    setConnected(true); renderAll(); showToast('Berhasil terhubung!','success');
+    setConnected(true); syncAllChecklist(); renderAll(); showToast('Berhasil terhubung!','success');
   } catch(e) { setConnected(false); showToast('Gagal: '+e.message,'error'); console.error('[SB]',e); }
 }
 
@@ -1372,8 +1481,10 @@ function renderParticipants() {
     tbody.innerHTML=`<tr><td colspan="${colspan}" style="text-align:center;color:var(--muted);font-size:11px;padding:18px;">Belum ada peserta</td></tr>`;
     return;
   }
-  tbody.innerHTML=appState.participants.map((p,i)=>{
-    // Ensure weeks array matches weekCount
+  // Sort display alphabetically, but keep original index for toggleWeek/removeParticipant
+  const indexed = appState.participants.map((p,i) => ({p, i}));
+  indexed.sort((a,b) => a.p.nama.localeCompare(b.p.nama, 'id'));
+  tbody.innerHTML = indexed.map(({p, i}) => {
     while(p.weeks.length < weekCount) p.weeks.push(false);
     const weekCells = Array.from({length:weekCount},(_,w)=>
       `<td><input type="checkbox" class="custom-check" ${p.weeks[w]?'checked':''} onchange="toggleWeek(${i},${w},this.checked)"/></td>`
@@ -1437,6 +1548,8 @@ function resetAktFilter() {
   document.getElementById('filterNama').value = '';
   document.getElementById('filterDari').value = '';
   document.getElementById('filterSampai').value = '';
+  const sm = document.getElementById('aktSortMode');
+  if (sm) sm.value = 'input';
   renderAktivitas();
 }
 document.addEventListener('click', e => {
@@ -1458,7 +1571,19 @@ function renderAktivitas() {
   if (filterNama) entries = entries.filter(e => e.nama.toLowerCase().includes(filterNama));
   if (filterDari) entries = entries.filter(e => e.tanggal >= filterDari);
   if (filterSampai) entries = entries.filter(e => e.tanggal <= filterSampai);
-  const sorted = entries.sort((a,b) => b.tanggal.localeCompare(a.tanggal));
+  const sortMode = document.getElementById('aktSortMode')?.value || 'input';
+  let sorted;
+  if (sortMode === 'tanggal') {
+    // Sort by tanggal desc, then by id (input time) desc within same date
+    sorted = entries.sort((a,b) => {
+      const tgl = b.tanggal.localeCompare(a.tanggal);
+      if (tgl !== 0) return tgl;
+      return (b.id||0) - (a.id||0);
+    });
+  } else {
+    // Sort by input time (id = Date.now()) desc — latest input first
+    sorted = entries.sort((a,b) => (b.id||0) - (a.id||0));
+  }
   if (!sorted.length) {
     tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--muted);font-size:11px;padding:20px;">Tidak ada data sesuai filter</td></tr>`;
     return;
@@ -1529,13 +1654,217 @@ function saveEditEntry() {
   if (isNaN(elevasi)||elevasi<0) { showToast('Elevasi tidak valid!','error'); return; }
   if (!/^\d+:\d{2}$/.test(pace)) { showToast('Format pace salah. Contoh: 5:30','error'); return; }
   appState.entries[editingIndex] = {...appState.entries[editingIndex], tanggal, jarak, elevasi, pace};
-  saveToSupabase(); closeEditModal(); renderAktivitas(); renderKlasmen(); updateFilterBulan();
+  autoSyncEntry(tanggal, appState.entries[editingIndex].nama);
+  saveToSupabase(); closeEditModal(); renderParticipants(); renderAktivitas(); renderKlasmen(); updateFilterBulan();
   showToast('Data berhasil diperbarui!','success');
 }
 // Close modal on overlay click
 document.getElementById('editModal').addEventListener('click', function(e) {
   if (e.target === this) closeEditModal();
 });
+
+// ─── SYNC CHECKLIST ──────────────────────────────────────────
+/**
+ * For each participant, check which weeks they have activity entries in
+ * (based on tanggal of entries vs weekDefs/weekRanges for that month).
+ * Returns: { [nama]: [bool, bool, bool, bool, ...] }  (length = weekCount)
+ */
+function syncAllChecklist() {
+  // Called once after data is loaded — syncs all entries to checklist
+  const weekCount = getWeekCount();
+  appState.entries.forEach(e => {
+    autoSyncEntry(e.tanggal, e.nama);
+  });
+}
+
+function autoSyncEntry(tanggal, nama) {
+  // Find participant
+  const p = appState.participants.find(x => x.nama === nama);
+  if (!p) return;
+  const bulan = tanggal.substring(0, 7);
+  const ranges = getWeekRanges(bulan);
+  const day = new Date(tanggal + 'T00:00:00').getDate();
+  const weekCount = getWeekCount();
+  ranges.forEach(w => {
+    const wIdx = w.num - 1;
+    if (wIdx < weekCount && day >= w.start && day <= w.end) {
+      p.weeks[wIdx] = true;
+    }
+  });
+  while (p.weeks.length < weekCount) p.weeks.push(false);
+}
+
+
+
+
+
+
+
+// ─── STRENGTH TRAINING ───────────────────────────────────────
+let stCalDate = new Date();
+let stSelectedDate = null;
+
+function toggleStDatePicker() {
+  const dd   = document.getElementById('stDateDropdown');
+  const disp = document.getElementById('stDateDisplay');
+  const isOpen = dd.classList.contains('open');
+  // close main date picker too
+  document.getElementById('dateDropdown').classList.remove('open');
+  document.getElementById('dateDisplay').classList.remove('open');
+  document.getElementById('stNameDropdown').classList.remove('open');
+  if (!isOpen) { dd.classList.add('open'); disp.classList.add('open'); renderStCal(); }
+  else { dd.classList.remove('open'); disp.classList.remove('open'); }
+}
+
+function renderStCal() {
+  const y = stCalDate.getFullYear(), m = stCalDate.getMonth();
+  document.getElementById('stCalMonthYear').textContent =
+    new Date(y,m).toLocaleString('id-ID',{month:'long',year:'numeric'});
+  const days = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+  let html = days.map(d=>`<div class="cal-day-name">${d}</div>`).join('');
+  const firstDay = new Date(y,m,1).getDay();
+  const total    = new Date(y,m+1,0).getDate();
+  const prevTotal= new Date(y,m,0).getDate();
+  const today    = new Date();
+  for(let i=firstDay-1;i>=0;i--) html+=`<div class="cal-day other-month">${prevTotal-i}</div>`;
+  for(let d=1;d<=total;d++){
+    const isToday = d===today.getDate()&&m===today.getMonth()&&y===today.getFullYear();
+    const isSel   = stSelectedDate&&d===stSelectedDate.getDate()&&m===stSelectedDate.getMonth()&&y===stSelectedDate.getFullYear();
+    html+=`<div class="cal-day${isToday?' today':''}${isSel?' selected':''}" onclick="selectStDate(${y},${m},${d})">${d}</div>`;
+  }
+  const rem = 42-firstDay-total;
+  for(let d=1;d<=rem;d++) html+=`<div class="cal-day other-month">${d}</div>`;
+  document.getElementById('stCalGrid').innerHTML = html;
+}
+
+function stCalChangeMonth(dir) {
+  stCalDate = new Date(stCalDate.getFullYear(), stCalDate.getMonth()+dir, 1);
+  renderStCal();
+}
+
+function selectStDate(y,m,d) {
+  stSelectedDate = new Date(y,m,d);
+  const fmt = stSelectedDate.toLocaleDateString('id-ID',{weekday:'short',day:'2-digit',month:'long',year:'numeric'});
+  const txt = document.getElementById('stDateDisplayText');
+  txt.textContent = fmt; txt.style.color = 'var(--text)';
+  document.getElementById('stDateDropdown').classList.remove('open');
+  document.getElementById('stDateDisplay').classList.remove('open');
+}
+
+function getStDateISO() {
+  if (!stSelectedDate) return null;
+  const y=stSelectedDate.getFullYear();
+  const m=String(stSelectedDate.getMonth()+1).padStart(2,'0');
+  const d=String(stSelectedDate.getDate()).padStart(2,'0');
+  return `${y}-${m}-${d}`;
+}
+
+function showStNameDropdown() {
+  const inp = document.getElementById('st-nama');
+  const dd  = document.getElementById('stNameDropdown');
+  const q   = inp.value.trim().toLowerCase();
+  const matches = appState.participants.filter(p => !q || p.nama.toLowerCase().includes(q));
+  if (!appState.participants.length) {
+    dd.innerHTML = `<div class="name-option no-match">Belum ada peserta</div>`;
+  } else if (!matches.length) {
+    dd.innerHTML = `<div class="name-option no-match">Tidak ditemukan</div>`;
+  } else {
+    dd.innerHTML = matches.map(p => {
+      const init = p.nama.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+      return `<div class="name-option" onclick="selectStName('${p.nama.replace(/'/g,"'")}')">
+        <div class="opt-avatar">${init}</div><span>${p.nama}</span>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('stDateDropdown').classList.remove('open');
+  document.getElementById('stDateDisplay').classList.remove('open');
+  dd.classList.add('open');
+}
+
+function selectStName(nama) {
+  document.getElementById('st-nama').value = nama;
+  document.getElementById('stNameDropdown').classList.remove('open');
+}
+
+// Close ST dropdowns on outside click
+document.addEventListener('click', e => {
+  if (!document.getElementById('stDatePickerWrap')?.contains(e.target)) {
+    document.getElementById('stDateDropdown')?.classList.remove('open');
+    document.getElementById('stDateDisplay')?.classList.remove('open');
+  }
+  if (!document.getElementById('stNameSearchWrap')?.contains(e.target))
+    document.getElementById('stNameDropdown')?.classList.remove('open');
+});
+
+function submitST() {
+  const tanggal = getStDateISO();
+  const nama    = document.getElementById('st-nama').value.trim();
+  if (!tanggal) { showToast('Pilih tanggal strength training!','error'); return; }
+  if (!nama)    { showToast('Pilih nama peserta!','error'); return; }
+
+  // Find which week this date falls in
+  const bulan  = tanggal.substring(0,7);
+  const ranges = getWeekRanges(bulan);
+  const day    = new Date(tanggal+'T00:00:00').getDate();
+  let weekNum  = null;
+  ranges.forEach(w => { if (day >= w.start && day <= w.end) weekNum = w.num; });
+
+  if (!weekNum) { showToast('Tanggal tidak masuk dalam minggu yang terdaftar!','error'); return; }
+
+  // Save to stEntries
+  if (!appState.stEntries) appState.stEntries = [];
+  appState.stEntries.push({ id: Date.now(), tanggal, nama, weekNum });
+
+  // Auto-check that week for the participant
+  const p = appState.participants.find(x => x.nama === nama);
+  if (p) {
+    const wIdx = weekNum - 1;
+    while (p.weeks.length <= wIdx) p.weeks.push(false);
+    p.weeks[wIdx] = true;
+  }
+
+  saveToSupabase();
+  renderParticipants();
+  renderKlasmen();
+  renderStLog();
+  clearStForm();
+  showToast(`✅ Strength training ${nama} — Week ${weekNum} tercatat & dicentang!`, 'success');
+}
+
+function clearStForm() {
+  stSelectedDate = null;
+  const txt = document.getElementById('stDateDisplayText');
+  txt.textContent = 'Pilih tanggal...'; txt.style.color = 'var(--muted)';
+  document.getElementById('st-nama').value = '';
+}
+
+function deleteStEntry(id) {
+  appState.stEntries = (appState.stEntries||[]).filter(e => e.id !== id);
+  saveToSupabase();
+  renderStLog();
+  showToast('Data strength training dihapus','success');
+}
+
+function renderStLog() {
+  const log = document.getElementById('stLog');
+  if (!log) return;
+  const entries = (appState.stEntries || []).slice().sort((a,b)=>b.tanggal.localeCompare(a.tanggal));
+  if (!entries.length) {
+    log.innerHTML = '<div class="st-empty">Belum ada data strength training</div>';
+    return;
+  }
+  log.innerHTML = `<table>
+    <thead><tr><th>Tanggal</th><th>Nama</th><th>Minggu</th><th></th></tr></thead>
+    <tbody>
+      ${entries.map(e => `<tr>
+        <td style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)">${e.tanggal}</td>
+        <td style="font-weight:500">${e.nama}</td>
+        <td><span class="st-week-badge">W${e.weekNum}</span></td>
+        <td><button class="btn-del-st" onclick="deleteStEntry(${e.id})">✕</button></td>
+      </tr>`).join('')}
+    </tbody>
+  </table>`;
+}
 
 // ─── WEEK 1 ST RULE ───────────────────────────────────────────
 // Jika W1 tidak dicentang (ST = tidak hadir di week 1), semua entry
@@ -1609,6 +1938,8 @@ function submitData() {
   if (!/^\d+:\d{2}$/.test(pace)){ showToast('Format pace salah. Contoh: 5:30','error'); return; }
 
   appState.entries.push({id:Date.now(),tanggal,nama,jarak,elevasi,pace});
+  // Auto-sync checklist on new entry
+  autoSyncEntry(tanggal, nama);
   saveToSupabase(); clearForm(); renderKlasmen(); renderAktivitas(); updateFilterBulan();
   showToast(`Data ${nama} ditambahkan!`,'success');
 }
@@ -1703,7 +2034,7 @@ function updateFilterBulan() {
   if (months.includes(cur)) sel.value=cur;
 }
 
-function renderAll() { renderWeekChips(); renderParticipants(); renderKlasmen(); renderAktivitas(); updateFilterBulan(); }
+function renderAll() { renderWeekChips(); renderParticipants(); renderKlasmen(); renderAktivitas(); updateFilterBulan(); renderStLog(); }
 
 // ─── TOAST ────────────────────────────────────────────────────
 function showToast(msg,type='success') {
