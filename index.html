@@ -659,6 +659,10 @@
   html.view-only .btn-edit { display: none !important; }
   html.view-only .wc-date-input { pointer-events: none; opacity: .6; }
   html.view-only .btn-add-week5 { display: none; }
+
+  /* ── ADMIN1: hide kehadiran & minggu cards ── */
+  html.admin1-mode .kehadiran-card { display: none !important; }
+  html.admin1-mode .minggu-card    { display: none !important; }
   .role-badge {
     font-family: 'DM Mono', monospace; font-size: 10px;
     letter-spacing: 1px; padding: 4px 10px;
@@ -1155,7 +1159,7 @@ async function loadFromSupabase() {
       const s=rows[0].value;
       appState.entries=s.entries||[]; appState.participants=s.participants||[]; appState.stEntries=s.stEntries||[]; appState.lastUpdated=s.lastUpdated||null; appState.weekDefs=s.weekDefs||{};
     }
-    setConnected(true); syncAllChecklist(); renderAll(); showToast('Berhasil terhubung!','success');
+    setConnected(true); renderAll(); showToast('Berhasil terhubung!','success');
   } catch(e) { setConnected(false); showToast('Gagal: '+e.message,'error'); console.error('[SB]',e); }
 }
 
@@ -1188,6 +1192,15 @@ function setTodayAsDefault() {
   const disp = today.toLocaleDateString('id-ID',{weekday:'short',day:'2-digit',month:'long',year:'numeric'});
   const txt = document.getElementById('dateDisplayText');
   txt.textContent = disp; txt.style.color = 'var(--text)';
+}
+
+function setStTodayAsDefault() {
+  const today = new Date();
+  stSelectedDate = today;
+  stCalDate = new Date(today.getFullYear(), today.getMonth(), 1);
+  const disp = today.toLocaleDateString('id-ID',{weekday:'short',day:'2-digit',month:'long',year:'numeric'});
+  const txt = document.getElementById('stDateDisplayText');
+  if (txt) { txt.textContent = disp; txt.style.color = 'var(--text)'; }
 }
 
 function toggleDatePicker() {
@@ -1654,7 +1667,6 @@ function saveEditEntry() {
   if (isNaN(elevasi)||elevasi<0) { showToast('Elevasi tidak valid!','error'); return; }
   if (!/^\d+:\d{2}$/.test(pace)) { showToast('Format pace salah. Contoh: 5:30','error'); return; }
   appState.entries[editingIndex] = {...appState.entries[editingIndex], tanggal, jarak, elevasi, pace};
-  autoSyncEntry(tanggal, appState.entries[editingIndex].nama);
   saveToSupabase(); closeEditModal(); renderParticipants(); renderAktivitas(); renderKlasmen(); updateFilterBulan();
   showToast('Data berhasil diperbarui!','success');
 }
@@ -1669,14 +1681,6 @@ document.getElementById('editModal').addEventListener('click', function(e) {
  * (based on tanggal of entries vs weekDefs/weekRanges for that month).
  * Returns: { [nama]: [bool, bool, bool, bool, ...] }  (length = weekCount)
  */
-function syncAllChecklist() {
-  // Called once after data is loaded — syncs all entries to checklist
-  const weekCount = getWeekCount();
-  appState.entries.forEach(e => {
-    autoSyncEntry(e.tanggal, e.nama);
-  });
-}
-
 function autoSyncEntry(tanggal, nama) {
   // Find participant
   const p = appState.participants.find(x => x.nama === nama);
@@ -1832,10 +1836,8 @@ function submitST() {
 }
 
 function clearStForm() {
-  stSelectedDate = null;
-  const txt = document.getElementById('stDateDisplayText');
-  txt.textContent = 'Pilih tanggal...'; txt.style.color = 'var(--muted)';
   document.getElementById('st-nama').value = '';
+  setStTodayAsDefault();
 }
 
 function deleteStEntry(id) {
@@ -1939,7 +1941,6 @@ function submitData() {
 
   appState.entries.push({id:Date.now(),tanggal,nama,jarak,elevasi,pace});
   // Auto-sync checklist on new entry
-  autoSyncEntry(tanggal, nama);
   saveToSupabase(); clearForm(); renderKlasmen(); renderAktivitas(); updateFilterBulan();
   showToast(`Data ${nama} ditambahkan!`,'success');
 }
@@ -2352,10 +2353,11 @@ function initTheme() {
 
 // ─── LOGIN ────────────────────────────────────────────────────
 const USERS = {
-  admin: { pass: 'admin123', role: 'admin' },
-  user:  { pass: 'user1',    role: 'viewer' }
+  admin:  { pass: 'admin123', role: 'admin' },
+  admin1: { pass: 'admin123', role: 'admin1' },
+  user:   { pass: 'user1',    role: 'viewer' }
 };
-let currentRole = null; // 'admin' | 'viewer'
+let currentRole = null; // 'admin' | 'admin1' | 'viewer'
 
 function doLogin() {
   const u = document.getElementById('loginUser').value.trim().toLowerCase();
@@ -2389,37 +2391,47 @@ function doLogin() {
 function applyRole(role) {
   currentRole = role;
   const isViewer = role === 'viewer';
-  // Elements to hide/disable for viewer
-  const adminOnly = [
-    'inputCard',          // entire input form
-    'clearAllDataBtn',    // hapus semua button
-    'addParticipantBtn',  // + peserta button
-    'addParticipantForm', // add participant form
+  const isAdmin1 = role === 'admin1';
+
+  // Elements hidden for viewer only
+  const viewerHidden = [
+    'inputCard',
+    'clearAllDataBtn',
+    'addParticipantBtn',
+    'addParticipantForm',
   ];
-  adminOnly.forEach(id => {
+  viewerHidden.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = isViewer ? 'none' : '';
   });
 
-  // Hide edit/delete in aktivitas table (re-render handles this via isViewer flag)
-  // Hide week checkboxes in kehadiran (read-only via CSS)
+  // view-only class (disables checkboxes etc for viewer)
   if (isViewer) {
     document.documentElement.classList.add('view-only');
   } else {
     document.documentElement.classList.remove('view-only');
   }
 
-  // Show role badge in header
+  // admin1-mode class (hides kehadiran + minggu cards)
+  if (isAdmin1) {
+    document.documentElement.classList.add('admin1-mode');
+  } else {
+    document.documentElement.classList.remove('admin1-mode');
+  }
+
+  // Role badge
   const badge = document.getElementById('roleBadge');
   if (badge) {
-    badge.textContent = isViewer ? '👁 View Only' : '⚙ Admin';
-    badge.style.color = isViewer ? 'var(--muted)' : 'var(--accent)';
+    const labels = { admin: '⚙ Admin', admin1: '⚙ Admin', viewer: '👁 View Only' };
+    const colors = { admin: 'var(--accent)', admin1: 'var(--accent)', viewer: 'var(--muted)' };
+    badge.textContent = labels[role] || '⚙ Admin';
+    badge.style.color  = colors[role]  || 'var(--accent)';
   }
 }
 
 function checkSession() {
   const saved = sessionStorage.getItem('spsl_auth');
-  if (saved === 'admin' || saved === 'viewer') {
+  if (saved === 'admin' || saved === 'admin1' || saved === 'viewer') {
     document.getElementById('loginOverlay').style.display = 'none';
     document.getElementById('appContent').classList.add('unlocked');
     applyRole(saved);
@@ -2433,6 +2445,7 @@ window.onload=()=>{
   initTheme();
   calDate=new Date();
   setTodayAsDefault();
+  setStTodayAsDefault();
   const loggedIn = checkSession();
   if (loggedIn) {
     renderAll();
