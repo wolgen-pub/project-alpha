@@ -625,6 +625,18 @@
   .date-dropdown, .name-dropdown, .week-chip, .config-bar {
     transition: background .25s, border-color .25s, box-shadow .25s;
   }
+  .btn-logout {
+    padding: 5px 12px;
+    background: transparent;
+    border: 1px solid rgba(248,113,113,.4);
+    color: var(--red);
+    border-radius: 8px; cursor: pointer;
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    letter-spacing: .5px; white-space: nowrap;
+    transition: background .2s, border-color .2s, color .2s;
+  }
+  .btn-logout:hover { background: rgba(248,113,113,.12); border-color: var(--red); }
+
   .theme-toggle {
     width: 34px; height: 34px;
     background: var(--theme-toggle-bg);
@@ -812,6 +824,7 @@
   </div>
   <div style="display:flex;align-items:center;gap:12px;">
     <span class="role-badge" id="roleBadge"></span>
+    <button class="btn-logout" id="btnLogout" onclick="doLogout()" title="Logout">⏏ Logout</button>
     <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Ganti tema">
       <span id="themeIcon">☀️</span>
     </button>
@@ -2333,6 +2346,25 @@ function downloadPDF() {
   <\/script>`);
   win.document.close();
   showToast('Dialog cetak/simpan PDF terbuka di tab baru!','success');
+}
+
+// ─── LOGOUT ───────────────────────────────────────────────────
+function doLogout() {
+  sessionStorage.removeItem('spsl_auth');
+  currentRole = null;
+  // Reset app state visually
+  document.documentElement.classList.remove('view-only','admin1-mode');
+  document.getElementById('appContent').classList.remove('unlocked');
+  // Show login overlay
+  const overlay = document.getElementById('loginOverlay');
+  overlay.style.display = 'flex';
+  overlay.style.opacity = '1';
+  overlay.style.pointerEvents = '';
+  // Clear login fields
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+  document.getElementById('loginError').classList.remove('show');
+  setTimeout(() => document.getElementById('loginUser').focus(), 100);
 }
 
 // ─── THEME ────────────────────────────────────────────────────
