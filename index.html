@@ -526,7 +526,6 @@
   }
   .st-log {
     margin-top: 14px;
-    max-height: 150px; overflow-y: auto;
     border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
   }
   .st-log table { width: 100%; border-collapse: collapse; }
@@ -535,6 +534,10 @@
     padding: 7px 10px; font-size: 9px; letter-spacing: 1px;
     text-transform: uppercase; color: var(--muted); font-weight: 600;
     text-align: left; border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 1; background: var(--surface2);
+  }
+  .st-log-scroll {
+    max-height: 180px; overflow-y: auto;
   }
   .st-log td {
     padding: 7px 10px; font-size: 12px;
@@ -1868,17 +1871,22 @@ function renderStLog() {
     log.innerHTML = '<div class="st-empty">Belum ada data strength training</div>';
     return;
   }
-  log.innerHTML = `<table>
-    <thead><tr><th>Tanggal</th><th>Nama</th><th>Minggu</th><th></th></tr></thead>
-    <tbody>
-      ${entries.map(e => `<tr>
-        <td style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)">${e.tanggal}</td>
-        <td style="font-weight:500">${e.nama}</td>
-        <td><span class="st-week-badge">W${e.weekNum}</span></td>
-        <td><button class="btn-del-st" onclick="deleteStEntry(${e.id})">✕</button></td>
-      </tr>`).join('')}
-    </tbody>
-  </table>`;
+  log.innerHTML = `
+    <table>
+      <thead><tr><th>Tanggal</th><th>Nama</th><th>Minggu</th><th></th></tr></thead>
+    </table>
+    <div class="st-log-scroll">
+      <table>
+        <tbody>
+          ${entries.map(e => `<tr>
+            <td style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)">${e.tanggal}</td>
+            <td style="font-weight:500">${e.nama}</td>
+            <td><span class="st-week-badge">W${e.weekNum}</span></td>
+            <td><button class="btn-del-st" onclick="deleteStEntry(${e.id})">✕</button></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
 }
 
 // ─── WEEK 1 ST RULE ───────────────────────────────────────────
